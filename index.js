@@ -1,7 +1,7 @@
-const AWS = require("aws-sdk");
-
 function Dyn(docClient) {
-  docClient = docClient || new AWS.DynamoDB.DocumentClient();
+  if (!docClient) {
+  	throw new Error("docClient is required for library to wrap");
+	}
 
   const reader = new Proxy(
     {},

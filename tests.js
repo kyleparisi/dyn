@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 const Dyn = require("./index.js");
 
 AWS.config.region = "us-east-1";
-const { reader, query } = new Dyn();
+const { reader, query } = new Dyn(new AWS.DynamoDB.DocumentClient());
 
 (async () => {
   console.log(await reader.Movies({

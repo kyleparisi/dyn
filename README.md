@@ -2,9 +2,22 @@
 
 Super crude idea for a library to talk with dynamodb.  Does not handle paging at the moment.  An interesting use of js proxies.
 
-## [TODO] Create
+## Create
 
-`dyn[table] = {}`
+```js
+// create[table] = {}
+
+create.ProductCatalog = {
+  Id: 500,
+  Price: 222,
+  ProductCategory: "Bicycle",
+  Title: "99-Bike-212",
+  BicycleType: "Hybrid",
+  Brand: "Brand 212",
+  Color: ["Red"],
+  Description: "212 Description"
+}
+```
 
 ## Read
 

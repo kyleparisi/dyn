@@ -2,13 +2,13 @@ const AWS = require("aws-sdk");
 const Dyn = require("./index.js");
 
 AWS.config.region = "us-east-1";
-const { reader, query } = new Dyn(new AWS.DynamoDB.DocumentClient());
+const { reader, query, queryAndFilter, scan, create } = new Dyn(new AWS.DynamoDB.DocumentClient());
 
 (async () => {
-  console.log(await reader.Movies({
-  	year: 2013,
-  	title: "2 Guns"
-  }));
+  // console.log(await reader.Movies({
+  // 	year: 2013,
+  // 	title: "2 Guns"
+  // }));
   //	Will fail key schema
   //	console.log(await reader.Movies({
   //		year: 1985
@@ -56,4 +56,17 @@ const { reader, query } = new Dyn(new AWS.DynamoDB.DocumentClient());
   //	}));
   //
   //	console.log(await scan.ProductCatalog[""]());
+})();
+
+(async () => {
+  	// console.log(create.ProductCatalog = {
+  	//   Id: 500,
+    //   Price: 222,
+    //   ProductCategory: "Bicycle",
+    //   Title: "99-Bike-212",
+    //   BicycleType: "Hybrid",
+    //   Brand: "Brand 212",
+    //   Color: ["Red"],
+    //   Description: "212 Description"
+    // })
 })();

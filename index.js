@@ -1,7 +1,7 @@
 function Dyn(docClient) {
   if (!docClient) {
-  	throw new Error("docClient is required for library to wrap");
-	}
+    throw new Error("docClient is required for library to wrap");
+  }
 
   const reader = new Proxy(
     {},
@@ -105,7 +105,7 @@ function Dyn(docClient) {
         }
       };
 
-      var params = {
+      const params = {
         TableName: name
       };
       return new Proxy(params, query);
@@ -154,7 +154,24 @@ function Dyn(docClient) {
     }
   );
 
+  const create = new Proxy(
+    {},
+    {
+      set: function(obj, prop, value) {
+        const params = {
+          TableName: prop,
+          Item: value
+        };
+        return docClient.put(params).promise();
+      }
+    }
+  );
+
   return {
+    // Create
+    create,
+
+    // Read
     reader,
     query,
     queryAndFilter,

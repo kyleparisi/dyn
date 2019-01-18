@@ -111,5 +111,3 @@ await product205["set Color = :color"]({
 
 await del.ProductCatalog({Id: 500})
 ```
-
-`delete dyn[table][param:value,param:value]`

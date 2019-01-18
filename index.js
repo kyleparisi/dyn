@@ -63,53 +63,56 @@ function Dyn(docClient) {
     }
   );
 
-  const queryAndFilter = {
-    get: function(target, name) {
-      const filter = {
-        get: function(target, name) {
-          if (name) {
-            target.FilterExpression = name;
+  const queryAndFilter = new Proxy(
+    {},
+    {
+      get: function(target, name) {
+        const filter = {
+          get: function(target, name) {
+            if (name) {
+              target.FilterExpression = name;
+            }
+            return keys => {
+              target.ExpressionAttributeValues = keys;
+              return docClient
+                .query(target)
+                .promise()
+                .then(doc => doc.Items);
+            };
           }
-          return keys => {
-            target.ExpressionAttributeValues = keys;
-            return docClient
-              .query(target)
-              .promise()
-              .then(doc => doc.Items);
-          };
-        }
-      };
+        };
 
-      const query = {
-        get: function(target, name) {
-          const regex = /#(\w+)/gm;
-          let m;
+        const query = {
+          get: function(target, name) {
+            const regex = /#(\w+)/gm;
+            let m;
 
-          target.ExpressionAttributeNames = {};
+            target.ExpressionAttributeNames = {};
 
-          while ((m = regex.exec(name)) !== null) {
-            // This is necessary to avoid infinite loops with zero-width matches
-            if (m.index === regex.lastIndex) {
-              regex.lastIndex++;
+            while ((m = regex.exec(name)) !== null) {
+              // This is necessary to avoid infinite loops with zero-width matches
+              if (m.index === regex.lastIndex) {
+                regex.lastIndex++;
+              }
+
+              target.ExpressionAttributeNames[m[0]] = m[1];
+            }
+            if (!Object.keys(target.ExpressionAttributeNames).length) {
+              delete target.ExpressionAttributeNames;
             }
 
-            target.ExpressionAttributeNames[m[0]] = m[1];
+            target.KeyConditionExpression = name;
+            return new Proxy(target, filter);
           }
-          if (!Object.keys(target.ExpressionAttributeNames).length) {
-            delete target.ExpressionAttributeNames;
-          }
+        };
 
-          target.KeyConditionExpression = name;
-          return new Proxy(target, filter);
-        }
-      };
-
-      const params = {
-        TableName: name
-      };
-      return new Proxy(params, query);
+        const params = {
+          TableName: name
+        };
+        return new Proxy(params, query);
+      }
     }
-  };
+  );
 
   const scan = new Proxy(
     {},
@@ -176,7 +179,10 @@ function Dyn(docClient) {
             target.ReturnValues = "ALL_NEW";
             return values => {
               target.ExpressionAttributeValues = values;
-              return docClient.update(target).promise().then(item => item.Attributes);
+              return docClient
+                .update(target)
+                .promise()
+                .then(item => item.Attributes);
             };
           }
         };
@@ -198,24 +204,27 @@ function Dyn(docClient) {
     }
   );
 
-  const del = new Proxy({}, {
-    get: function (target, name) {
-      const table = function(params) {
-        return () => params;
-      };
-      const keySelection = {
-        apply: function(fn, thisArg, argumentsList) {
-          const target = fn();
-          target.Key = argumentsList[0];
-          return docClient.delete(target).promise();
-        }
-      };
-      const params = {
-        TableName: name
-      };
-      return new Proxy(table(params), keySelection);
+  const del = new Proxy(
+    {},
+    {
+      get: function(target, name) {
+        const table = function(params) {
+          return () => params;
+        };
+        const keySelection = {
+          apply: function(fn, thisArg, argumentsList) {
+            const target = fn();
+            target.Key = argumentsList[0];
+            return docClient.delete(target).promise();
+          }
+        };
+        const params = {
+          TableName: name
+        };
+        return new Proxy(table(params), keySelection);
+      }
     }
-  });
+  );
 
   return {
     // Create

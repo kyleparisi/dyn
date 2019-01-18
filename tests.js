@@ -2,7 +2,9 @@ const AWS = require("aws-sdk");
 const Dyn = require("./index.js");
 
 AWS.config.region = "us-east-1";
-const { reader, query, queryAndFilter, scan, create, update, del } = new Dyn(new AWS.DynamoDB.DocumentClient());
+const { reader, query, queryAndFilter, scan, create, update, del } = new Dyn(
+  new AWS.DynamoDB.DocumentClient()
+);
 
 (async () => {
   // console.log(await reader.Movies({
@@ -33,15 +35,15 @@ const { reader, query, queryAndFilter, scan, create, update, del } = new Dyn(new
 })();
 
 (async () => {
-  // console
-  //   .log
-    // await queryAndFilter.Movies["#year = :year and begins_with(title, :title)"][
-    //   "rated = :rated"
-    // ]({
-    //   ":title": "A",
-    //   ":year": 2013,
-    //   ":rated": "PG"
-    // })
+  // console.log(
+  //   await queryAndFilter.Movies["#year = :year and begins_with(title, :title)"][
+  //     "rated = :rated"
+  //   ]({
+  //     ":title": "A",
+  //     ":year": 2013,
+  //     ":rated": "PG"
+  //   })
+  // );
 })();
 
 (async () => {
@@ -59,18 +61,17 @@ const { reader, query, queryAndFilter, scan, create, update, del } = new Dyn(new
 })();
 
 (async () => {
-  	// console.log(create.ProductCatalog = {
-  	//   Id: 500,
-    //   Price: 222,
-    //   ProductCategory: "Bicycle",
-    //   Title: "99-Bike-212",
-    //   BicycleType: "Hybrid",
-    //   Brand: "Brand 212",
-    //   Color: ["Red"],
-    //   Description: "212 Description"
-    // })
+  // console.log(create.ProductCatalog = {
+  //   Id: 500,
+  //   Price: 222,
+  //   ProductCategory: "Bicycle",
+  //   Title: "99-Bike-212",
+  //   BicycleType: "Hybrid",
+  //   Brand: "Brand 212",
+  //   Color: ["Red"],
+  //   Description: "212 Description"
+  // })
 })();
-
 
 (async () => {
   // console.log(await update.ProductCatalog({Id: 500})["set Price = :price"]({

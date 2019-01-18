@@ -198,6 +198,25 @@ function Dyn(docClient) {
     }
   );
 
+  const del = new Proxy({}, {
+    get: function (target, name) {
+      const table = function(params) {
+        return () => params;
+      };
+      const keySelection = {
+        apply: function(fn, thisArg, argumentsList) {
+          const target = fn();
+          target.Key = argumentsList[0];
+          return docClient.delete(target).promise();
+        }
+      };
+      const params = {
+        TableName: name
+      };
+      return new Proxy(table(params), keySelection);
+    }
+  });
+
   return {
     // Create
     create,
@@ -209,7 +228,10 @@ function Dyn(docClient) {
     scan,
 
     // Update
-    update
+    update,
+
+    // Delete
+    del
   };
 }
 

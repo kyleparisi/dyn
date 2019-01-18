@@ -104,6 +104,12 @@ await product205["set Color = :color"]({
 })
 ```
 
-## [TODO] Delete
+## Delete
+
+```js
+// del[table](partitionkey: value, [sortkey: value]})
+
+await del.ProductCatalog({Id: 500})
+```
 
 `delete dyn[table][param:value,param:value]`

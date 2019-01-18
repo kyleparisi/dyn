@@ -1,3 +1,9 @@
+/**
+ * CRUD operations on dynamodb docClient
+ * @param {DocumentClient} docClient
+ * @return {{create: {}, reader: {}, query: {}, queryAndFilter: {}, scan: {}, update: {}, del: {}}}
+ * @constructor
+ */
 function Dyn(docClient) {
   if (!docClient) {
     throw new Error("docClient is required for library to wrap");

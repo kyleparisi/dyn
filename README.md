@@ -81,15 +81,28 @@ await scan.ProductCatalog["id between :start and :end"]({
 await scan.ProductCatalog[""]()
 ```
 
-## [TODO] Update
+## Update
 
-`dyn[table][param:value,param:value] = {}`
+```js
+// update[table]({partitionkey: value, [sortkey: value]})["update expression template"]({template_var: value})
 
-`dyn[table][param:value,param:value] = {'info.rating': 1, title: 'A cool movie'}`
+await update.ProductCatalog({Id: 500})["set Price = :price"]({
+    ":price": 300
+})
 
-How to update via inline modification:
+await update.ProductCatalog({Id: 500})["set Color = :color"]({
+    ":color": ["Green"]
+})
 
-`dyn[table][param:value,param:value] = {'info.rating': 'info.rating + 1'}`
+const product500 = update.ProductCatalog({Id: 500});
+const product205 = update.ProductCatalog({Id: 205});
+await product500["set Color = :color"]({
+    ":color": ["Yellow"]
+});
+await product205["set Color = :color"]({
+    ":color": ["Yellow"]
+})
+```
 
 ## [TODO] Delete
 

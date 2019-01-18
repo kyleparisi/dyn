@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 const Dyn = require("./index.js");
 
 AWS.config.region = "us-east-1";
-const { reader, query, queryAndFilter, scan, create } = new Dyn(new AWS.DynamoDB.DocumentClient());
+const { reader, query, queryAndFilter, scan, create, update } = new Dyn(new AWS.DynamoDB.DocumentClient());
 
 (async () => {
   // console.log(await reader.Movies({
@@ -69,4 +69,22 @@ const { reader, query, queryAndFilter, scan, create } = new Dyn(new AWS.DynamoDB
     //   Color: ["Red"],
     //   Description: "212 Description"
     // })
+})();
+
+
+(async () => {
+  console.log(await update.ProductCatalog({Id: 500})["set Price = :price"]({
+    ":price": 300
+  }));
+  console.log(await update.ProductCatalog({Id: 500})["set Color = :color"]({
+    ":color": ["Green"]
+  }));
+  const product500 = update.ProductCatalog({Id: 500});
+  const product205 = update.ProductCatalog({Id: 205});
+  console.log(await product500["set Color = :color"]({
+    ":color": ["Yellow"]
+  }));
+  console.log(await product205["set Color = :color"]({
+    ":color": ["Yellow"]
+  }));
 })();

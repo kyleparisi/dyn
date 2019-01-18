@@ -67,7 +67,6 @@ function Dyn(docClient) {
     get: function(target, name) {
       const filter = {
         get: function(target, name) {
-          console.log(target, name);
           if (name) {
             target.FilterExpression = name;
           }
@@ -167,6 +166,38 @@ function Dyn(docClient) {
     }
   );
 
+  const update = new Proxy(
+    {},
+    {
+      get: function(target, name) {
+        const updateExpression = {
+          get: function(target, name) {
+            target.UpdateExpression = name;
+            target.ReturnValues = "ALL_NEW";
+            return values => {
+              target.ExpressionAttributeValues = values;
+              return docClient.update(target).promise().then(item => item.Attributes);
+            };
+          }
+        };
+        const table = function(params) {
+          return () => params;
+        };
+        const keySelection = {
+          apply: function(fn, thisArg, argumentsList) {
+            const target = fn();
+            target.Key = argumentsList[0];
+            return new Proxy(target, updateExpression);
+          }
+        };
+        const params = {
+          TableName: name
+        };
+        return new Proxy(table(params), keySelection);
+      }
+    }
+  );
+
   return {
     // Create
     create,
@@ -175,7 +206,10 @@ function Dyn(docClient) {
     reader,
     query,
     queryAndFilter,
-    scan
+    scan,
+
+    // Update
+    update
   };
 }
 

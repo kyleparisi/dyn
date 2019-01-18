@@ -8,7 +8,5 @@
   },
   "author": "Kyle Parisi (http://blog.kyleparisi.com)",
   "license": "ISC",
-  "dependencies": {
-    "aws-sdk": "^2.384.0"
-  }
+  "dependencies": {}
 }

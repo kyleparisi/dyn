@@ -210,6 +210,47 @@ function Dyn(docClient) {
     }
   );
 
+  const updateConditionally = new Proxy(
+    {},
+    {
+      get: function(target, name) {
+        const updateExpression = {
+          get: function(target, name) {
+            target.UpdateExpression = name;
+            target.ReturnValues = "ALL_NEW";
+            return values => {
+              target.ExpressionAttributeValues = values;
+              return docClient
+                .update(target)
+                .promise()
+                .then(item => item.Attributes);
+            };
+          }
+        };
+        const conditionalExpression = {
+          get: function (target, name) {
+            target.ConditionExpression = name;
+            return new Proxy(target, updateExpression);
+          }
+        };
+        const table = function(params) {
+          return () => params;
+        };
+        const keySelection = {
+          apply: function(fn, thisArg, argumentsList) {
+            const target = fn();
+            target.Key = argumentsList[0];
+            return new Proxy(target, conditionalExpression);
+          }
+        };
+        const params = {
+          TableName: name
+        };
+        return new Proxy(table(params), keySelection);
+      }
+    }
+  );
+
   const del = new Proxy(
     {},
     {
@@ -244,6 +285,7 @@ function Dyn(docClient) {
 
     // Update
     update,
+    updateConditionally,
 
     // Delete
     del

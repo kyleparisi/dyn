@@ -2,7 +2,7 @@ const AWS = require("aws-sdk");
 const Dyn = require("./index.js");
 
 AWS.config.region = "us-east-1";
-const { reader, query, queryAndFilter, scan, create, update, del } = new Dyn(
+const { reader, query, queryAndFilter, scan, create, update, updateConditionally, del } = new Dyn(
   new AWS.DynamoDB.DocumentClient()
 );
 
@@ -88,6 +88,18 @@ const { reader, query, queryAndFilter, scan, create, update, del } = new Dyn(
   // console.log(await product205["set Color = :color"]({
   //   ":color": ["Yellow"]
   // }));
+})();
+
+(async () => {
+  try {
+    console.log(await updateConditionally.ProductCatalog({Id: 202})["Price < :price"]["set Price = :price"]({
+      ":price": 500
+    }));
+  } catch(e) {
+    if (e.code === "ConditionalCheckFailedException") {
+      // no update found
+    }
+  }
 })();
 
 (async () => {

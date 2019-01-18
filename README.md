@@ -85,6 +85,8 @@ await scan.ProductCatalog[""]()
 
 ## Update
 
+Update:
+
 ```js
 // update[table]({partitionkey: value, [sortkey: value]})["update expression template"]({template_var: value})
 
@@ -104,6 +106,22 @@ await product500["set Color = :color"]({
 await product205["set Color = :color"]({
     ":color": ["Yellow"]
 })
+```
+
+Update Conditionally:
+
+```js
+// updateConditionally[table]({partitionkey: value, [sortkey: value]})["conditional template"]["update expression template"]({template_var: value})
+
+try {
+    await updateConditionally.ProductCatalog({Id: 202})["Price < :price"]["set Price = :price"]({
+        ":price": 500
+    });
+} catch(e) {
+    if (e.code === "ConditionalCheckFailedException") {
+        // no update found
+    }
+}
 ```
 
 ## Delete

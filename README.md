@@ -2,7 +2,7 @@
 
 Super crude idea for a library to talk with dynamodb.  Does not handle paging at the moment.  An interesting use of js proxies.
 
-See [dyn_data](https://github.com/kyleparisi/dyn_data) for some movie data.
+See [dyn_data](https://github.com/kyleparisi/dyn_data) for some data.
 
 ## Create
 

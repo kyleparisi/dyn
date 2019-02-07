@@ -165,12 +165,15 @@ function Dyn(docClient) {
   const create = new Proxy(
     {},
     {
+      get: function(target, name) {
+        return target[name];
+      },
       set: function(obj, prop, value) {
         const params = {
           TableName: prop,
           Item: value
         };
-        return docClient.put(params).promise();
+        obj.promise = docClient.put(params).promise();
       }
     }
   );
@@ -228,7 +231,7 @@ function Dyn(docClient) {
           }
         };
         const conditionalExpression = {
-          get: function (target, name) {
+          get: function(target, name) {
             target.ConditionExpression = name;
             return new Proxy(target, updateExpression);
           }

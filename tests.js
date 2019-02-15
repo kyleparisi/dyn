@@ -47,17 +47,17 @@ const { reader, query, queryAndFilter, scan, create, update, updateConditionally
 })();
 
 (async () => {
-  //	console.log(await scan.Movies["#year between :start_yr and :end_yr"]({
-  //		":start_yr": 2009,
-  //		":end_yr": 2018
-  //	}));
-  //
-  //	console.log(await scan.ProductCatalog["Id between :start and :end"]({
-  //		":start": 200,
-  //		":end": 300
-  //	}));
-  //
-  //	console.log(await scan.ProductCatalog[""]());
+  	console.log(await scan.Movies["#year between :start_yr and :end_yr"]({
+  		":start_yr": 2009,
+  		":end_yr": 2018
+  	}));
+
+  	console.log(await scan.ProductCatalog["Id between :start and :end"]({
+  		":start": 200,
+  		":end": 300
+  	}));
+
+  	console.log(await scan.ProductCatalog[""]());
 })();
 
 (async () => {
@@ -91,15 +91,15 @@ const { reader, query, queryAndFilter, scan, create, update, updateConditionally
 })();
 
 (async () => {
-  try {
-    console.log(await updateConditionally.ProductCatalog({Id: 202})["Price < :price"]["set Price = :price"]({
-      ":price": 500
-    }));
-  } catch(e) {
-    if (e.code === "ConditionalCheckFailedException") {
-      // no update found
-    }
-  }
+  // try {
+  //   console.log(await updateConditionally.ProductCatalog({Id: 202})["Price < :price"]["set Price = :price"]({
+  //     ":price": 500
+  //   }));
+  // } catch(e) {
+  //   if (e.code === "ConditionalCheckFailedException") {
+  //     // no update found
+  //   }
+  // }
 })();
 
 (async () => {

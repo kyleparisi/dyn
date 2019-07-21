@@ -2,9 +2,17 @@ const AWS = require("aws-sdk");
 const Dyn = require("./index.js");
 
 AWS.config.region = "us-east-1";
-const { reader, query, queryAndFilter, scan, create, update, updateConditionally, del } = new Dyn(
-  new AWS.DynamoDB.DocumentClient()
-);
+const {
+  reader,
+  query,
+  queryByIndex,
+  queryAndFilter,
+  scan,
+  create,
+  update,
+  updateConditionally,
+  del
+} = new Dyn(new AWS.DynamoDB.DocumentClient());
 
 (async () => {
   // console.log(await reader.Movies({
@@ -47,17 +55,17 @@ const { reader, query, queryAndFilter, scan, create, update, updateConditionally
 })();
 
 (async () => {
-  	console.log(await scan.Movies["#year between :start_yr and :end_yr"]({
-  		":start_yr": 2009,
-  		":end_yr": 2018
-  	}));
-
-  	console.log(await scan.ProductCatalog["Id between :start and :end"]({
-  		":start": 200,
-  		":end": 300
-  	}));
-
-  	console.log(await scan.ProductCatalog[""]());
+  // console.log(await scan.Movies["#year between :start_yr and :end_yr"]({
+  // 	":start_yr": 2009,
+  // 	":end_yr": 2018
+  // }));
+  //
+  // console.log(await scan.ProductCatalog["Id between :start and :end"]({
+  // 	":start": 200,
+  // 	":end": 300
+  // }));
+  //
+  // console.log(await scan.ProductCatalog[""]());
 })();
 
 (async () => {
@@ -104,4 +112,12 @@ const { reader, query, queryAndFilter, scan, create, update, updateConditionally
 
 (async () => {
   // console.log(await del.ProductCatalog({Id: 500}));
+})();
+
+(async () => {
+  console.log(
+    await queryByIndex.User.UserNameIndex["id = :id"]({
+      ":id": "blahblah"
+    })
+  );
 })();

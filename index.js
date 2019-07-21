@@ -81,6 +81,55 @@
       }
     );
 
+    const queryByIndex = new Proxy(
+      {},
+      {
+        get: function(target, name) {
+          const keyExpression = {
+            get: function(target, name) {
+              const regex = /#(\w+)/gm;
+              let m;
+
+              target.ExpressionAttributeNames = {};
+
+              while ((m = regex.exec(name)) !== null) {
+                // This is necessary to avoid infinite loops with zero-width matches
+                if (m.index === regex.lastIndex) {
+                  regex.lastIndex++;
+                }
+
+                target.ExpressionAttributeNames[m[0]] = m[1];
+              }
+              if (!Object.keys(target.ExpressionAttributeNames).length) {
+                delete target.ExpressionAttributeNames;
+              }
+
+              target.KeyConditionExpression = name;
+              return keys => {
+                target.ExpressionAttributeValues = keys;
+                return docClient
+                  .query(target)
+                  .promise()
+                  .then(doc => doc.Items);
+              };
+            }
+          };
+
+          const index = {
+            get: function(target, name) {
+              target.IndexName = name;
+              return new Proxy(params, keyExpression);
+            }
+          };
+
+          const params = {
+            TableName: name
+          };
+          return new Proxy(params, index);
+        }
+      }
+    );
+
     const queryAndFilter = new Proxy(
       {},
       {
@@ -295,6 +344,7 @@
       // Read
       reader,
       query,
+      queryByIndex,
       queryAndFilter,
       scan,
 

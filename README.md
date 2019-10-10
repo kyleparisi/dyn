@@ -6,6 +6,23 @@ Super crude idea for a library to talk with dynamodb.  Does not handle paging at
 npm i @nargella/dyn
 ```
 
+```js
+const Dyn = require("@nargella/dyn");
+const AWS = require("aws-sdk");
+AWS.config.region = "us-east-1";
+const {
+  reader,
+  query,
+  queryByIndex,
+  queryAndFilter,
+  scan,
+  create,
+  update,
+  updateConditionally,
+  del
+} = new Dyn(new AWS.DynamoDB.DocumentClient());
+```
+
 See [dyn_data](https://github.com/kyleparisi/dyn_data) for some data.
 
 ## Create
